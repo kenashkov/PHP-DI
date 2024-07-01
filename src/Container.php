@@ -344,7 +344,12 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
 
         // Check if we are already getting this entry -> circular dependency
         if (isset($this->entriesBeingResolved[$entryName])) {
-            throw new DependencyException("Circular dependency detected while trying to resolve entry '$entryName'");
+            $stack = implode(', ', array_keys($this->entriesBeingResolved));
+
+            throw new DependencyException(
+                "Circular dependency detected while trying to resolve entry '$entryName'." .
+                "The dependency stack is '{$stack}'"
+            );
         }
         $this->entriesBeingResolved[$entryName] = true;
 
